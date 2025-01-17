@@ -12,13 +12,13 @@ const initialGameBoard = [
   [null, null, null],
 ];
 
-function deriveActivePlayer (gameTurns) {
+function deriveActivePlayer(gameTurns) {
   let currentPlayer = "X";
 
   if (gameTurns.length > 0 && gameTurns[0].player === "X") {
     currentPlayer = "O";
   }
-  return currentPlayer
+  return currentPlayer;
 }
 
 function App() {
@@ -26,34 +26,44 @@ function App() {
   // const [hasWinner, setHasWinner] = useState(false)
   // const [activePlayer, setActivePlayer] = useState("X");
 
-const activePlayer = deriveActivePlayer(gameTurns)
+  const activePlayer = deriveActivePlayer(gameTurns);
 
-let gameBoard = initialGameBoard;
+  let gameBoard = [...initialGameBoard.map(array => [...array])];
 
-for (const turn of gameTurns) {
-  const { square, player } = turn;
-  const { row, col } = square;
+  for (const turn of gameTurns) {
+    const { square, player } = turn;
+    const { row, col } = square;
 
-  gameBoard[row][col] = player;
-}
-let winner 
-for (const combination of WINNING_COMBINATIONS) {
-  const firstSquareSymbol = gameBoard[combination[0].row][combination[0].column]
-  const secondSquareSymbol = gameBoard[combination[1].row][combination[1].column]
-  const thirdSquareSymbol = gameBoard[combination[2].row][combination[2].column]
-
-  if (firstSquareSymbol && firstSquareSymbol === secondSquareSymbol && firstSquareSymbol === thirdSquareSymbol){
-winner = firstSquareSymbol
+    gameBoard[row][col] = player;
   }
-}
+  let winner;
+  for (const combination of WINNING_COMBINATIONS) {
+    const firstSquareSymbol =
+      gameBoard[combination[0].row][combination[0].column];
+    const secondSquareSymbol =
+      gameBoard[combination[1].row][combination[1].column];
+    const thirdSquareSymbol =
+      gameBoard[combination[2].row][combination[2].column];
 
+    if (
+      firstSquareSymbol &&
+      firstSquareSymbol === secondSquareSymbol &&
+      firstSquareSymbol === thirdSquareSymbol
+    ) {
+      winner = firstSquareSymbol;
+    }
+  }
 
-const hasDraw = gameTurns.length === 9 && !winner
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
+  const hasDraw = gameTurns.length === 9 && !winner;
 
   function handleSelectSquare(rowIndex, colIndex) {
     //setActivePlayer((curActivePlayer) => (curActivePlayer === "X" ? "O" : "X"));
     setGameTurns((prevTurns) => {
-      const currentPlayer = deriveActivePlayer(prevTurns)
+      const currentPlayer = deriveActivePlayer(prevTurns);
       const updatedTurns = [
         { square: { row: rowIndex, col: colIndex }, player: activePlayer },
         ...prevTurns,
@@ -77,10 +87,12 @@ const hasDraw = gameTurns.length === 9 && !winner
             isActive={activePlayer === "O"}
           />
         </ol>
-        {(winner || hasDraw) && <GameOver winner={winner}/>}
+        {(winner || hasDraw) && (
+          <GameOver winner={winner} onRestart={handleRestart} />
+        )}
         <GameBoard onSelectSquare={handleSelectSquare} board={gameBoard} />
       </div>
-      <Log turns={gameTurns}/>
+      <Log turns={gameTurns} />
     </main>
   );
 }
