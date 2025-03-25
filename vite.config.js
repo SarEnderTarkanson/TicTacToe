@@ -20,8 +20,8 @@ export default defineConfig({
         theme_color: "#fcd256",
         background_color: "#282617",
         display: "standalone",
-        scope: "/",
-        start_url: "/",
+        scope: "/TicTacToe/",
+        start_url: "/TicTacToe/",
         icons: [
           {
             src: "pwa-192x192.png",
